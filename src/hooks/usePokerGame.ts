@@ -191,7 +191,7 @@ export function usePokerGame(options: UsePokerGameOptions) {
         if (latest && isBettingRoundComplete(latest)) {
           setState(advancePhase(latest));
         }
-      }, 1200); // Short delay for visual clarity
+      }, 600); // Shorter delay for faster flow
       return () => clearTimeout(timer);
     }
 
@@ -201,7 +201,7 @@ export function usePokerGame(options: UsePokerGameOptions) {
     if (processingRef.current) return;
 
     processingRef.current = true;
-    const delay = 600 + Math.random() * 800; // Slightly faster bot turns
+    const delay = 300 + Math.random() * 500; // Much faster bot turns
 
     botTimerRef.current = setTimeout(() => {
       const latest = stateRef.current;

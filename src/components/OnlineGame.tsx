@@ -53,7 +53,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
       }
     };
     poll();
-    pollRef.current = setInterval(poll, 1500);
+    pollRef.current = setInterval(poll, 800);
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, [roomId]);
 
