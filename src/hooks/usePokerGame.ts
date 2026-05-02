@@ -223,6 +223,7 @@ export function usePokerGame(options: UsePokerGameOptions) {
 
     return () => {
       if (botTimerRef.current) clearTimeout(botTimerRef.current);
+      processingRef.current = false;
     };
   }, [state?.currentPlayerIndex, state?.phase, state?.handNumber, setState]);
 

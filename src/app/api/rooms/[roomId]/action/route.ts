@@ -59,7 +59,7 @@ export async function POST(req: NextRequest, { params }: Params) {
   }
 
   let next = applyAction(state, playerId, action, amount);
-  if (isBettingRoundComplete(next)) {
+  while (next.phase !== 'ended' && isBettingRoundComplete(next)) {
     next = advancePhase(next);
   }
 
