@@ -40,15 +40,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
         if (res.ok) {
           const data = await res.json();
           if (data.gameState) setGameState(data.gameState);
-          if (data.chat) {
-            setChat(prev => {
-              // Only update if the last message ID changed or length changed
-              if (prev.length !== data.chat.length || (prev.length > 0 && prev[prev.length - 1].id !== data.chat[data.chat.length - 1].id)) {
-                return data.chat;
-              }
-              return prev;
-            });
-          }
+          if (data.chat) setChat(data.chat);
           setPlayers(data.players ?? []);
           setIsStarted(data.isStarted ?? false);
           setHostId(data.hostId ?? '');
@@ -61,7 +53,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
       }
     };
     poll();
-    pollRef.current = setInterval(poll, 800);
+    pollRef.current = setInterval(poll, 1500);
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, [roomId]);
 
@@ -252,28 +244,13 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
       <div className="w-56 border-l border-white/10 flex flex-col bg-black/30 backdrop-blur-sm">
         <div className="p-3 border-b border-white/10 text-white font-bold text-sm">💬 Table Chat</div>
         <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2">
-          {chat.map((msg, i) => {
-            const isMe = msg.playerId === playerId;
-            const showName = i === 0 || chat[i-1].playerId !== msg.playerId;
-            return (
-              <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} mb-1`}>
-                {showName && (
-                  <span className="text-[10px] text-white/30 font-bold mb-0.5 px-1 uppercase tracking-tighter">
-                    {msg.playerName}
-                  </span>
-                )}
-                <div className={`
-                  max-w-[90%] px-3 py-1.5 rounded-2xl text-xs break-words shadow-sm
-                  ${isMe 
-                    ? 'bg-blue-600 text-white rounded-tr-none border border-blue-400/30' 
-                    : 'bg-white/10 text-white rounded-tl-none border border-white/10'}
-                `}>
-                  {msg.message}
-                </div>
-              </div>
-            );
-          })}
-          <div ref={chatEndRef} className="h-2" />
+          {chat.map(msg => (
+            <div key={msg.id} className={`text-xs ${msg.playerId === playerId ? 'text-right' : ''}`}>
+              <span className="text-white/40">{msg.playerName}: </span>
+              <span className="text-white">{msg.message}</span>
+            </div>
+          ))}
+          <div ref={chatEndRef} />
         </div>
         <div className="p-3 border-t border-white/10 flex gap-2">
           <input
