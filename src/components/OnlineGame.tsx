@@ -53,7 +53,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
       }
     };
     poll();
-    pollRef.current = setInterval(poll, 1500);
+    pollRef.current = setInterval(poll, 600);
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, [roomId]);
 
@@ -91,13 +91,24 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
 
   const sendChat = async () => {
     if (!chatInput.trim()) return;
+    const msgText = chatInput.trim();
+    setChatInput('');
+    
+    // Eagerly update local chat for responsiveness
+    setChat(prev => [...prev, {
+      id: `temp-${Date.now()}`,
+      playerId,
+      playerName,
+      message: msgText,
+      ts: Date.now()
+    }]);
+
     try {
       await fetch(`/api/rooms/${roomId}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ playerId, playerName, message: chatInput.trim() }),
+        body: JSON.stringify({ playerId, playerName, message: msgText }),
       });
-      setChatInput('');
     } catch {}
   };
 

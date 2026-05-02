@@ -203,11 +203,7 @@ export default function OnlineLobby({ config, onBack, onJoinRoom }: OnlineLobbyP
               </div>
             </div>
 
-            {/* Join by code */}
-              </div>
-            </div>
 
-            {/* Join by code */}
             <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[32px] border border-white/10 p-6 shadow-2xl">
               <h3 className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Invitation</h3>
               <p className="text-white font-black text-xl mb-6">Join with Access Code</p>
