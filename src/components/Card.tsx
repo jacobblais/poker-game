@@ -11,8 +11,6 @@ interface CardProps {
   onClick?: () => void;
   className?: string;
   initial?: any;
-  animate?: any;
-  transition?: any;
 }
 
 const SIZE_CLASSES = {
@@ -21,10 +19,7 @@ const SIZE_CLASSES = {
   lg: { w: 80, h: 112, rank: 26, suit: 34 },
 };
 
-export default function Card({ 
-  card, faceDown = false, size = 'md', selected, onClick, className = '', 
-  initial, animate, transition 
-}: CardProps) {
+export default function Card({ card, faceDown = false, size = 'md', selected, onClick, className = '', initial }: CardProps) {
   const dims = SIZE_CLASSES[size];
   const isRed = card && (card.suit === 'hearts' || card.suit === 'diamonds');
   const showFaceDown = faceDown || !card || card.faceUp === false;
@@ -33,8 +28,7 @@ export default function Card({
     <motion.div
       layout
       initial={initial || { scale: 0.8, opacity: 0 }}
-      animate={animate || { scale: 1, opacity: 1 }}
-      transition={transition}
+      animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.8, opacity: 0 }}
       whileHover={onClick ? { scale: 1.05, y: -5 } : {}}
       whileTap={onClick ? { scale: 0.95 } : {}}

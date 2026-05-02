@@ -69,45 +69,27 @@ export default function PokerTable({
               )}
             </AnimatePresence>
 
-            {/* Community cards & Deck/Discard */}
-            <div className="flex items-center gap-6">
-              {/* Discard Pile (Left) */}
-              <div className="relative w-10 h-14 hidden sm:block">
-                <div className="absolute inset-0 bg-black/20 rounded-md border-2 border-dashed border-white/10 flex items-center justify-center text-[10px] text-white/20 font-bold uppercase tracking-tighter">Discard</div>
-                {state.phase === 'ended' && (
-                  <motion.div initial={{ rotate: 0 }} animate={{ rotate: -15 }} className="absolute inset-0">
-                    <Card size="sm" faceDown={true} className="opacity-40" />
-                  </motion.div>
-                )}
-              </div>
-
-              {/* Deck (Center-Left) */}
+            {/* Community cards & Deck */}
+            <div className="flex items-center gap-4">
+              {/* Deck */}
               {state.phase !== 'ended' && state.phase !== 'waiting' && (
-                <div className="relative perspective-1000 hidden sm:block">
-                  <div className="w-10 h-14 bg-blue-900 rounded-md border border-blue-700 shadow-lg transform -translate-x-1 -translate-y-1" />
-                  <Card size="sm" faceDown={true} className="absolute inset-0 shadow-2xl" />
+                <div className="relative group perspective-1000 hidden sm:block">
+                  <div className="w-10 h-14 bg-blue-800 rounded-md border border-blue-600 shadow-lg transform -rotate-6 translate-x-1 translate-y-1" />
+                  <div className="absolute inset-0 w-10 h-14 bg-blue-700 rounded-md border border-blue-500 shadow-lg transform -rotate-3 translate-x-0.5 translate-y-0.5" />
+                  <Card size="sm" faceDown={true} className="shadow-2xl" />
                 </div>
               )}
 
-              {/* Community cards (Center) */}
               {state.communityCards.length > 0 && (
                 <div className="flex gap-2">
                   {state.communityCards.map((card, i) => (
-                    <Card
-                      key={`${state.handNumber}-${i}`}
-                      card={card}
-                      faceDown={false}
-                      size="sm"
-                      initial={{ x: -100, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: i * 0.2 }}
-                    />
+                    <Card key={i} card={card} faceDown={false} size="sm" />
                   ))}
                   {/* Placeholder slots */}
                   {state.variant === 'texas_holdem' || state.variant === 'omaha' || state.variant === 'omaha_hilo'
                     ? Array(5 - state.communityCards.length).fill(null).map((_, i) => (
-                        <Card key={`ph-${i}`} size="sm" />
-                      ))
+                      <Card key={`ph-${i}`} size="sm" />
+                    ))
                     : null}
                 </div>
               )}
@@ -116,11 +98,11 @@ export default function PokerTable({
             {/* Phase label */}
             <div className="text-white/40 text-xs uppercase tracking-widest font-light">
               {state.phase === 'preflop' ? 'Pre-Flop' :
-               state.phase === 'flop' ? 'Flop' :
-               state.phase === 'turn' ? 'Turn' :
-               state.phase === 'river' ? 'River' :
-               state.phase === 'draw' ? '✋ Draw' :
-               state.phase === 'ended' ? '🏆 Showdown' : ''}
+                state.phase === 'flop' ? 'Flop' :
+                  state.phase === 'turn' ? 'Turn' :
+                    state.phase === 'river' ? 'River' :
+                      state.phase === 'draw' ? '✋ Draw' :
+                        state.phase === 'ended' ? '🏆 Showdown' : ''}
             </div>
           </div>
 
