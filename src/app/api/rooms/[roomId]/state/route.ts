@@ -12,5 +12,6 @@ export async function GET(_req: NextRequest, { params }: Params) {
     chat: await getChat(roomId),
     players: room.players,
     isStarted: room.isStarted,
+    hostId: room.hostId,
   });
 }

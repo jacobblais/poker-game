@@ -55,8 +55,15 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
 
   const startGame = async () => {
     try {
-      const res = await fetch(`/api/rooms/${roomId}/start`, { method: 'POST' });
-      if (!res.ok) setError('Only host can start the game');
+      const res = await fetch(`/api/rooms/${roomId}/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playerId }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Only host can start the game');
+      }
     } catch {
       setError('Failed to start game');
     }
@@ -178,7 +185,11 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ playerId, cardIndices: indices }),
             })}
-            onNewHand={() => fetch(`/api/rooms/${roomId}/next-hand`, { method: 'POST' })}
+            onNewHand={() => fetch(`/api/rooms/${roomId}/next-hand`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ playerId }),
+            })}
           />
         </div>
       </div>

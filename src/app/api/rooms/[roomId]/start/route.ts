@@ -14,6 +14,15 @@ export async function POST(req: NextRequest, { params }: Params) {
   if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
   if (room.isStarted) return NextResponse.json({ error: 'Already started' }, { status: 400 });
 
+  const { playerId } = await req.json();
+  if (room.hostId !== playerId) {
+    return NextResponse.json({ error: 'Only the host can start the game' }, { status: 403 });
+  }
+
+  if (room.players.length < 2) {
+    return NextResponse.json({ error: 'Need at least 2 players to start' }, { status: 400 });
+  }
+
   // Map room players to game players
   const players: Player[] = room.players.map((p, i) => ({
     id: p.id,

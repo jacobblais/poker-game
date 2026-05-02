@@ -4,10 +4,15 @@ import { initNewHand, dealHoleCards, postBlinds } from '@/lib/gameEngine';
 
 interface Params { params: Promise<{ roomId: string }> }
 
-export async function POST(_req: NextRequest, { params }: Params) {
+export async function POST(req: NextRequest, { params }: Params) {
   const { roomId } = await params;
   const room = await getRoom(roomId);
   if (!room || !room.gameState) return NextResponse.json({ error: 'No game' }, { status: 404 });
+
+  const { playerId } = await req.json();
+  if (room.hostId !== playerId) {
+    return NextResponse.json({ error: 'Only the host can start the next hand' }, { status: 403 });
+  }
 
   let next = initNewHand(room.gameState);
   next = dealHoleCards(next);
