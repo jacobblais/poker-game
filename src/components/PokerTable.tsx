@@ -119,9 +119,10 @@ export default function PokerTable({
                   player={player}
                   state={state}
                   isCurrentTurn={state.players[state.currentPlayerIndex]?.id === player.id}
-                  position={pos as any}
+                   position={pos as any}
                   showCards={showdown}
                   winner={winnerInfo}
+                  isSpectator={!humanPlayer}
                 />
               </div>
             );
@@ -133,9 +134,11 @@ export default function PokerTable({
       {showdown && state.winners && state.winners.length > 0 && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           <div className="bg-black/80 backdrop-blur-xl border-4 border-yellow-500/50 rounded-[40px] p-8 text-center shadow-[0_0_100px_rgba(234,179,8,0.3)] animate-in fade-in zoom-in duration-500 pointer-events-auto max-w-lg w-full mx-4">
-            <div className="text-5xl mb-4 animate-bounce">🏆</div>
+            <div className="text-5xl mb-4 animate-bounce">
+              {!humanPlayer || state.winners.some(w => w.playerId === humanPlayer.id) ? '🏆' : '💔'}
+            </div>
             <h2 className="text-4xl font-black text-white mb-4 bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 bg-clip-text text-transparent uppercase tracking-tighter">
-              Winner!
+              {!humanPlayer ? 'Hand Finished' : state.winners.some(w => w.playerId === humanPlayer.id) ? 'Winner!' : 'You Lost'}
             </h2>
             <div className="space-y-4 mb-8">
               {state.winners.map((w, i) => (

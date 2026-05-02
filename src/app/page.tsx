@@ -48,27 +48,15 @@ function BotGame({ config, onBack }: { config: GameConfig; onBack: () => void })
       </div>
 
       <div className="flex-1 p-2 min-h-0 overflow-auto">
-        {isEliminated ? (
-          <div className="h-full flex flex-col items-center justify-center text-center">
-            <div className="text-6xl mb-4">💸</div>
-            <h2 className="text-3xl font-bold text-white mb-2">Busted!</h2>
-            <p className="text-white/60 mb-6">You ran out of chips. Better luck next time!</p>
-            <button onClick={onBack}
-              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-2xl transition">
-              Play Again
-            </button>
-          </div>
-        ) : (
-          <PokerTable
-            state={state}
-            humanPlayer={humanPlayer}
-            isHumanTurn={isHumanTurn}
-            callAmount={callAmount}
-            onAction={playerAction}
-            onDraw={drawCards}
-            onNewHand={newHand}
-          />
-        )}
+        <PokerTable
+          state={state}
+          humanPlayer={humanPlayer}
+          isHumanTurn={isHumanTurn}
+          callAmount={callAmount}
+          onAction={playerAction}
+          onDraw={drawCards}
+          onNewHand={newHand}
+        />
       </div>
     </div>
   );

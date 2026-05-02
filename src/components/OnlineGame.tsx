@@ -26,6 +26,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
   const [chat, setChat] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [connected, setConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -33,6 +34,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
   // Poll game state (simple polling for Vercel compatibility)
   useEffect(() => {
     const poll = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch(`/api/rooms/${roomId}/state`);
         if (res.ok) {
@@ -46,6 +48,8 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
         }
       } catch {
         setConnected(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     poll();
@@ -169,7 +173,19 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
           <button onClick={onBack} className="text-white/50 hover:text-white text-sm transition">← Lobby</button>
           <div className="text-center">
             <div className="text-white font-bold text-sm">Online Table</div>
-            <div className="text-white/40 text-xs">Room: {roomId} · {connected ? '🟢 Connected' : '🔴 Reconnecting...'}</div>
+            <div className="text-white/40 text-xs flex items-center justify-center gap-2">
+              <span>Room: {roomId}</span>
+              <span>·</span>
+              <span className={connected ? 'text-green-400' : 'text-red-400'}>
+                {connected ? '● Connected' : '● Reconnecting...'}
+              </span>
+              {isLoading && (
+                <span className="text-blue-400 animate-pulse font-bold ml-1 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" />
+                  Loading...
+                </span>
+              )}
+            </div>
           </div>
           <div className="text-yellow-300 font-mono font-bold text-sm">${humanPlayer?.chips.toLocaleString() ?? 0}</div>
         </div>

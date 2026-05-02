@@ -11,6 +11,7 @@ interface PlayerSeatProps {
   position: 'bottom' | 'top' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   showCards?: boolean;
   winner?: WinnerInfo;
+  isSpectator?: boolean;
 }
 
 const positionStyles: Record<string, string> = {
@@ -24,7 +25,7 @@ const positionStyles: Record<string, string> = {
   'bottom-right': 'bottom-8 right-16',
 };
 
-export default function PlayerSeat({ player, state, isCurrentTurn, position, showCards, winner }: PlayerSeatProps) {
+export default function PlayerSeat({ player, state, isCurrentTurn, position, showCards, winner, isSpectator }: PlayerSeatProps) {
   const isHuman = !player.isBot;
   const winAmount = winner?.potAmount ?? 0;
   const isWinner = !!winner;
@@ -33,14 +34,17 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
     <div className={`absolute flex flex-col items-center gap-1 ${positionStyles[position]}`}>
       {/* Cards */}
       <div className="flex gap-1 mb-1">
-        {player.holeCards.map((card, i) => (
-          <Card
-            key={i}
-            card={card}
-            faceDown={!isHuman && !showCards && !isWinner && card.faceUp !== true}
-            size="sm"
-          />
-        ))}
+        {player.holeCards.map((card, i) => {
+          const shouldShow = isHuman || isWinner || card.faceUp === true || isSpectator || (showCards && !player.folded);
+          return (
+            <Card
+              key={i}
+              card={card}
+              faceDown={!shouldShow}
+              size="sm"
+            />
+          );
+        })}
         {player.holeCards.length === 0 && !player.folded && (
           <div className="w-10 h-14 rounded-md border border-dashed border-white/20" />
         )}
