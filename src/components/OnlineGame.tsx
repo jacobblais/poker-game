@@ -155,7 +155,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-950 flex">
+    <div className="h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-950 flex overflow-hidden">
       {/* Game */}
       <div className="flex-1 flex flex-col">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40 backdrop-blur-sm">
@@ -166,7 +166,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
           </div>
           <div className="text-yellow-300 font-mono font-bold text-sm">${humanPlayer?.chips.toLocaleString() ?? 0}</div>
         </div>
-        <div className="p-4 flex-1">
+        <div className="p-2 flex-1 min-h-0 overflow-auto">
           <PokerTable
             state={gameState}
             humanPlayer={humanPlayer}
@@ -184,7 +184,7 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
       </div>
 
       {/* Chat sidebar */}
-      <div className="w-64 border-l border-white/10 flex flex-col bg-black/30 backdrop-blur-sm">
+      <div className="w-56 border-l border-white/10 flex flex-col bg-black/30 backdrop-blur-sm">
         <div className="p-3 border-b border-white/10 text-white font-bold text-sm">💬 Table Chat</div>
         <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2">
           {chat.map(msg => (

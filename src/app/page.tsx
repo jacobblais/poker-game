@@ -31,7 +31,7 @@ function BotGame({ config, onBack }: { config: GameConfig; onBack: () => void })
   const isEliminated = humanPlayer && humanPlayer.chips === 0 && state.phase === 'ended';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-green-950 to-slate-950">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-950 via-green-950 to-slate-950 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40 backdrop-blur-sm">
         <button onClick={onBack} className="text-white/50 hover:text-white text-sm transition flex items-center gap-1">
@@ -47,9 +47,9 @@ function BotGame({ config, onBack }: { config: GameConfig; onBack: () => void })
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="flex-1 p-2 min-h-0 overflow-auto">
         {isEliminated ? (
-          <div className="max-w-md mx-auto mt-20 text-center">
+          <div className="h-full flex flex-col items-center justify-center text-center">
             <div className="text-6xl mb-4">💸</div>
             <h2 className="text-3xl font-bold text-white mb-2">Busted!</h2>
             <p className="text-white/60 mb-6">You ran out of chips. Better luck next time!</p>

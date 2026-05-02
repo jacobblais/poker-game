@@ -35,7 +35,7 @@ export default function PokerTable({
     : state.players;
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-4xl mx-auto">
+    <div className="flex flex-col gap-2 w-full max-w-3xl mx-auto h-full justify-between py-2">
       {/* Table */}
       <div className="relative w-full" style={{ paddingBottom: '60%' }}>
         {/* Felt */}
@@ -56,12 +56,12 @@ export default function PokerTable({
             {state.communityCards.length > 0 && (
               <div className="flex gap-2">
                 {state.communityCards.map((card, i) => (
-                  <Card key={i} card={card} faceDown={false} size="md" />
+                  <Card key={i} card={card} faceDown={false} size="sm" />
                 ))}
                 {/* Placeholder slots */}
                 {state.variant === 'texas_holdem' || state.variant === 'omaha' || state.variant === 'omaha_hilo'
                   ? Array(5 - state.communityCards.length).fill(null).map((_, i) => (
-                      <Card key={`ph-${i}`} size="md" />
+                      <Card key={`ph-${i}`} size="sm" />
                     ))
                   : null}
               </div>
@@ -125,9 +125,9 @@ export default function PokerTable({
       {/* Human's hole cards */}
       {humanPlayer && humanPlayer.holeCards.length > 0 && (
         <div className="relative z-30 flex flex-col items-center gap-2">
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             {humanPlayer.holeCards.map((card, i) => (
-              <Card key={i} card={{ ...card, faceUp: true }} size="lg" />
+              <Card key={i} card={{ ...card, faceUp: true }} size="md" />
             ))}
           </div>
           {humanPlayer.handResult && (
