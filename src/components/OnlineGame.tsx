@@ -101,6 +101,20 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
     } catch {}
   };
 
+  const closeTable = async () => {
+    if (!confirm('Are you sure you want to close this table for everyone?')) return;
+    try {
+      const res = await fetch(`/api/rooms/${roomId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playerId }),
+      });
+      if (res.ok) {
+        onBack();
+      }
+    } catch {}
+  };
+
   const humanPlayer = gameState?.players.find(p => p.id === playerId) ?? null;
   const isHumanTurn = gameState
     ? gameState.players[gameState.currentPlayerIndex]?.id === playerId && gameState.phase !== 'ended'
@@ -135,13 +149,21 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
           </div>
 
           {isHost ? (
-            <button
-              onClick={startGame}
-              disabled={players.length < 2}
-              className="w-full py-4 bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:hover:bg-green-600 text-white font-bold rounded-2xl transition shadow-xl shadow-green-900/40"
-            >
-              {players.length < 2 ? 'Waiting for Players...' : '🚀 Start Game'}
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={startGame}
+                disabled={players.length < 2}
+                className="w-full py-4 bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:hover:bg-green-600 text-white font-bold rounded-2xl transition shadow-xl shadow-green-900/40"
+              >
+                {players.length < 2 ? 'Waiting for Players...' : '🚀 Start Game'}
+              </button>
+              <button
+                onClick={closeTable}
+                className="w-full py-2 bg-red-600/10 hover:bg-red-600/20 text-red-500 text-xs font-bold rounded-xl border border-red-500/20 transition-all"
+              >
+                🗑️ Close Table
+              </button>
+            </div>
           ) : (
             <div className="text-center text-white/50 animate-pulse">
               Waiting for host to start...
@@ -188,6 +210,14 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
             </div>
           </div>
           <div className="text-yellow-300 font-mono font-bold text-sm">${humanPlayer?.chips.toLocaleString() ?? 0}</div>
+          {isHost && (
+            <button
+              onClick={closeTable}
+              className="ml-4 px-3 py-1 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-[10px] font-bold rounded-lg border border-red-500/30 transition-all uppercase tracking-wider"
+            >
+              Close Table
+            </button>
+          )}
         </div>
         <div className="p-2 flex-1 min-h-0 overflow-auto">
           <PokerTable
