@@ -29,7 +29,16 @@ export default function OnlineLobby({ config, onBack, onJoinRoom }: OnlineLobbyP
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const playerId = useState(() => uuidv4())[0];
+  const [playerId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('poker_player_id');
+      if (saved) return saved;
+      const newId = uuidv4();
+      localStorage.setItem('poker_player_id', newId);
+      return newId;
+    }
+    return uuidv4();
+  });
 
   const fetchRooms = async () => {
     try {

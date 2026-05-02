@@ -9,7 +9,7 @@ interface Params { params: Promise<{ roomId: string }> }
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { roomId } = await params;
-  const room = getRoom(roomId);
+  const room = await getRoom(roomId);
 
   if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
   if (room.isStarted) return NextResponse.json({ error: 'Already started' }, { status: 400 });
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     initial.currentBet = initial.smallBlind;
   }
 
-  updateRoom(roomId, { isStarted: true, gameState: initial });
+  await updateRoom(roomId, { isStarted: true, gameState: initial });
 
   return NextResponse.json({ success: true });
 }

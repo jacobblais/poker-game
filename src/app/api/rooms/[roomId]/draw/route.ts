@@ -6,7 +6,7 @@ interface Params { params: Promise<{ roomId: string }> }
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { roomId } = await params;
-  const room = getRoom(roomId);
+  const room = await getRoom(roomId);
   if (!room || !room.gameState) return NextResponse.json({ error: 'No game' }, { status: 404 });
 
   const { playerId, cardIndices } = await req.json();
@@ -28,6 +28,6 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const nextIdx = nextActivePlayerIndex({ ...state, players }, state.currentPlayerIndex);
   const next = { ...state, deck, players, currentPlayerIndex: nextIdx };
-  setRoom({ ...room, gameState: next });
+  await setRoom({ ...room, gameState: next });
   return NextResponse.json({ ok: true });
 }

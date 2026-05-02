@@ -6,7 +6,7 @@ interface Params { params: Promise<{ roomId: string }> }
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { roomId } = await params;
-  const room = getRoom(roomId);
+  const room = await getRoom(roomId);
   if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
   if (room.isStarted) return NextResponse.json({ error: 'Game already started' }, { status: 400 });
   if (room.players.length >= room.maxPlayers) return NextResponse.json({ error: 'Room full' }, { status: 400 });
@@ -24,6 +24,6 @@ export async function POST(req: NextRequest, { params }: Params) {
     isReady: true,
   };
 
-  setRoom({ ...room, players: [...room.players, player] });
+  await setRoom({ ...room, players: [...room.players, player] });
   return NextResponse.json({ ok: true });
 }

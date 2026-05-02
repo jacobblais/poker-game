@@ -4,7 +4,8 @@ import { getRoom, setRoom, getRooms } from '@/lib/store';
 import { GameRoom, RoomPlayer } from '@/lib/types';
 
 export async function GET() {
-  const rooms = getRooms()
+  const allRooms = await getRooms();
+  const rooms = allRooms
     .filter(r => !r.isStarted || r.players.length < r.maxPlayers)
     .slice(0, 20)
     .map(r => ({
@@ -53,6 +54,6 @@ export async function POST(req: NextRequest) {
     createdAt: Date.now(),
   };
 
-  setRoom(room);
+  await setRoom(room);
   return NextResponse.json({ roomId });
 }

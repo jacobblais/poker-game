@@ -6,13 +6,13 @@ interface Params { params: Promise<{ roomId: string }> }
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { roomId } = await params;
-  const room = getRoom(roomId);
+  const room = await getRoom(roomId);
   if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
 
   const { playerId, playerName, message } = await req.json();
   if (!message?.trim()) return NextResponse.json({ error: 'Empty message' }, { status: 400 });
 
-  addChat(roomId, {
+  await addChat(roomId, {
     id: uuidv4(),
     playerId,
     playerName,

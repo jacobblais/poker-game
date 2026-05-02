@@ -46,7 +46,7 @@ function advancePhase(state: GameState): GameState {
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { roomId } = await params;
-  const room = getRoom(roomId);
+  const room = await getRoom(roomId);
   if (!room || !room.gameState) return NextResponse.json({ error: 'No active game' }, { status: 404 });
 
   const { playerId, action, amount } = await req.json();
@@ -63,6 +63,6 @@ export async function POST(req: NextRequest, { params }: Params) {
     next = advancePhase(next);
   }
 
-  setRoom({ ...room, gameState: next });
+  await setRoom({ ...room, gameState: next });
   return NextResponse.json({ ok: true });
 }

@@ -1,41 +1,72 @@
-// In-memory store for Vercel serverless (use KV/Redis in production)
-import { GameRoom, GameState, RoomPlayer } from '@/lib/types';
+// src/lib/store.ts
+import { GameRoom } from '@/lib/types';
+import { kv } from '@vercel/kv';
 
-// Global store (persists within same serverless instance)
-const rooms = new Map<string, GameRoom>();
-const chatHistory = new Map<string, Array<{ id: string; playerId: string; playerName: string; message: string; ts: number }>>();
+// Fallback in-memory store for local development if KV is not configured
+const memoryRooms = new Map<string, GameRoom>();
+const memoryChat = new Map<string, any[]>();
 
-export function getRoom(id: string): GameRoom | undefined {
-  return rooms.get(id);
+const IS_KV_ENABLED = !!process.env.KV_REST_API_URL;
+
+export async function getRoom(id: string): Promise<GameRoom | undefined> {
+  if (IS_KV_ENABLED) {
+    return (await kv.get<GameRoom>(`room:${id}`)) || undefined;
+  }
+  return memoryRooms.get(id);
 }
 
-export function setRoom(room: GameRoom): void {
-  rooms.set(room.id, room);
-}
-
-export function updateRoom(id: string, updates: Partial<GameRoom>): void {
-  const room = rooms.get(id);
-  if (room) {
-    rooms.set(id, { ...room, ...updates });
+export async function setRoom(room: GameRoom): Promise<void> {
+  if (IS_KV_ENABLED) {
+    await kv.set(`room:${room.id}`, room, { ex: 3600 * 24 }); // Expire after 24h
+    // Keep a list of active rooms
+    await kv.sadd('active_rooms', room.id);
+  } else {
+    memoryRooms.set(room.id, room);
   }
 }
 
-export function getRooms(): GameRoom[] {
-  return Array.from(rooms.values());
+export async function updateRoom(id: string, updates: Partial<GameRoom>): Promise<void> {
+  const room = await getRoom(id);
+  if (room) {
+    await setRoom({ ...room, ...updates });
+  }
 }
 
-export function deleteRoom(id: string): void {
-  rooms.delete(id);
+export async function getRooms(): Promise<GameRoom[]> {
+  if (IS_KV_ENABLED) {
+    const ids = await kv.smembers('active_rooms');
+    const rooms = await Promise.all(ids.map(id => getRoom(id)));
+    return rooms.filter((r): r is GameRoom => !!r);
+  }
+  return Array.from(memoryRooms.values());
 }
 
-export function getChat(roomId: string) {
-  return chatHistory.get(roomId) ?? [];
+export async function deleteRoom(id: string): Promise<void> {
+  if (IS_KV_ENABLED) {
+    await kv.del(`room:${id}`);
+    await kv.srem('active_rooms', id);
+    await kv.del(`chat:${id}`);
+  } else {
+    memoryRooms.delete(id);
+    memoryChat.delete(id);
+  }
 }
 
-export function addChat(roomId: string, msg: { id: string; playerId: string; playerName: string; message: string; ts: number }) {
-  const hist = chatHistory.get(roomId) ?? [];
+export async function getChat(roomId: string): Promise<any[]> {
+  if (IS_KV_ENABLED) {
+    return (await kv.get<any[]>(`chat:${roomId}`)) ?? [];
+  }
+  return memoryChat.get(roomId) ?? [];
+}
+
+export async function addChat(roomId: string, msg: any): Promise<void> {
+  const hist = await getChat(roomId);
   hist.push(msg);
-  // Keep last 100 messages
   if (hist.length > 100) hist.splice(0, hist.length - 100);
-  chatHistory.set(roomId, hist);
+  
+  if (IS_KV_ENABLED) {
+    await kv.set(`chat:${roomId}`, hist, { ex: 3600 * 24 });
+  } else {
+    memoryChat.set(roomId, hist);
+  }
 }

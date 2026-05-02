@@ -6,7 +6,7 @@ interface Params { params: Promise<{ roomId: string }> }
 
 export async function POST(_req: NextRequest, { params }: Params) {
   const { roomId } = await params;
-  const room = getRoom(roomId);
+  const room = await getRoom(roomId);
   if (!room || !room.gameState) return NextResponse.json({ error: 'No game' }, { status: 404 });
 
   let next = initNewHand(room.gameState);
@@ -18,6 +18,6 @@ export async function POST(_req: NextRequest, { params }: Params) {
     next = { ...next, phase: 'preflop', currentBet: next.smallBlind };
   }
 
-  setRoom({ ...room, gameState: next });
+  await setRoom({ ...room, gameState: next });
   return NextResponse.json({ ok: true });
 }
