@@ -29,6 +29,11 @@ export default function PokerTable({
   const showdown = state.phase === 'ended';
   const potTotal = state.pots.reduce((s, p) => s + p.amount, 0);
 
+  // Check if game is over (only 1 player with chips > 0)
+  const playersWithChips = state.players.filter(p => p.chips > 0);
+  const isGameOver = showdown && playersWithChips.length === 1;
+  const gameWinner = isGameOver ? playersWithChips[0] : null;
+
   // Arrange players: human at bottom, bots around table
   const humanIdx = state.players.findIndex(p => !p.isBot);
   const reordered = humanIdx >= 0
@@ -123,6 +128,7 @@ export default function PokerTable({
                   showCards={showdown}
                   winner={winnerInfo}
                   isSpectator={!humanPlayer}
+                  isLocalPlayer={humanPlayer?.id === player.id}
                 />
               </div>
             );
@@ -130,31 +136,46 @@ export default function PokerTable({
         </div>
       </div>
 
-      {/* Winner announcement */}
-      {showdown && state.winners && state.winners.length > 0 && (
+      {/* Winner announcement / Game Over screen */}
+      {showdown && (state.winners && state.winners.length > 0 || isGameOver) && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           <div className="bg-black/80 backdrop-blur-xl border-4 border-yellow-500/50 rounded-[40px] p-8 text-center shadow-[0_0_100px_rgba(234,179,8,0.3)] animate-in fade-in zoom-in duration-500 pointer-events-auto max-w-lg w-full mx-4">
-            <div className="text-5xl mb-4 animate-bounce">
-              {!humanPlayer || state.winners.some(w => w.playerId === humanPlayer.id) ? '🏆' : '💔'}
-            </div>
-            <h2 className="text-4xl font-black text-white mb-4 bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 bg-clip-text text-transparent uppercase tracking-tighter">
-              {!humanPlayer ? 'Hand Finished' : state.winners.some(w => w.playerId === humanPlayer.id) ? 'Winner!' : 'You Lost'}
-            </h2>
-            <div className="space-y-4 mb-8">
-              {state.winners.map((w, i) => (
-                <div key={i} className="text-xl text-white font-medium bg-white/5 py-3 px-6 rounded-2xl border border-white/10">
-                  <span className="text-yellow-300 font-bold">{w.playerName}</span>
-                  <div className="text-2xl font-black text-green-400 mt-1">${w.potAmount.toLocaleString()}</div>
-                  <div className="text-sm text-white/50 mt-1">{w.handName}{w.isLow ? ' (Low)' : ''}</div>
+            {isGameOver ? (
+              <>
+                <div className="text-6xl mb-6 animate-bounce">👑</div>
+                <h2 className="text-5xl font-black text-white mb-2 bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 bg-clip-text text-transparent uppercase tracking-tighter">
+                  Game Over
+                </h2>
+                <div className="text-2xl text-white font-bold mb-8">
+                  <span className="text-green-400">{gameWinner?.name}</span> is the Ultimate Winner!
                 </div>
-              ))}
-            </div>
-            <button
-              onClick={onNewHand}
-              className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-black text-xl rounded-2xl transition-all active:scale-95 shadow-xl shadow-green-900/40 border-b-4 border-green-700"
-            >
-              Next Hand →
-            </button>
+                {/* No next hand button since game is over */}
+              </>
+            ) : (
+              <>
+                <div className="text-5xl mb-4 animate-bounce">
+                  {!humanPlayer || state.winners?.some(w => w.playerId === humanPlayer.id) ? '🏆' : '💔'}
+                </div>
+                <h2 className="text-4xl font-black text-white mb-4 bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 bg-clip-text text-transparent uppercase tracking-tighter">
+                  {!humanPlayer ? 'Hand Finished' : state.winners?.some(w => w.playerId === humanPlayer.id) ? 'Winner!' : 'You Lost'}
+                </h2>
+                <div className="space-y-4 mb-8">
+                  {state.winners?.map((w, i) => (
+                    <div key={i} className="text-xl text-white font-medium bg-white/5 py-3 px-6 rounded-2xl border border-white/10">
+                      <span className="text-yellow-300 font-bold">{w.playerName}</span>
+                      <div className="text-2xl font-black text-green-400 mt-1">${w.potAmount.toLocaleString()}</div>
+                      <div className="text-sm text-white/50 mt-1">{w.handName}{w.isLow ? ' (Low)' : ''}</div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={onNewHand}
+                  className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-black text-xl rounded-2xl transition-all active:scale-95 shadow-xl shadow-green-900/40 border-b-4 border-green-700"
+                >
+                  Next Hand →
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

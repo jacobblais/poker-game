@@ -12,6 +12,7 @@ interface PlayerSeatProps {
   showCards?: boolean;
   winner?: WinnerInfo;
   isSpectator?: boolean;
+  isLocalPlayer?: boolean;
 }
 
 const positionStyles: Record<string, string> = {
@@ -25,8 +26,7 @@ const positionStyles: Record<string, string> = {
   'bottom-right': 'bottom-8 right-16',
 };
 
-export default function PlayerSeat({ player, state, isCurrentTurn, position, showCards, winner, isSpectator }: PlayerSeatProps) {
-  const isHuman = !player.isBot;
+export default function PlayerSeat({ player, state, isCurrentTurn, position, showCards, winner, isSpectator, isLocalPlayer }: PlayerSeatProps) {
   const winAmount = winner?.potAmount ?? 0;
   const isWinner = !!winner;
 
@@ -35,7 +35,7 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
       {/* Cards */}
       <div className="flex gap-1 mb-1">
         {player.holeCards.map((card, i) => {
-          const shouldShow = isHuman || isWinner || card.faceUp === true || isSpectator || (showCards && !player.folded);
+          const shouldShow = isLocalPlayer || isWinner || card.faceUp === true || isSpectator || (showCards && !player.folded);
           return (
             <Card
               key={i}
@@ -56,7 +56,7 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
         ${player.folded ? 'opacity-40 scale-95' : ''}
         ${isCurrentTurn ? 'border-yellow-400 scale-105 glow-active' : 'border-white/20'}
         ${isWinner ? 'border-green-400 shadow-lg shadow-green-500/40' : ''}
-        ${isHuman ? 'bg-blue-900/80 backdrop-blur-sm' : 'bg-slate-800/80 backdrop-blur-sm'}
+        ${isLocalPlayer ? 'bg-blue-900/80 backdrop-blur-sm' : 'bg-slate-800/80 backdrop-blur-sm'}
       `}>
         {/* Turn indicator */}
         {isCurrentTurn && !player.folded && (
