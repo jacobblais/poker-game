@@ -56,20 +56,31 @@ export default function PokerTable({
               </div>
             )}
 
-            {/* Community cards */}
-            {state.communityCards.length > 0 && (
-              <div className="flex gap-2">
-                {state.communityCards.map((card, i) => (
-                  <Card key={i} card={card} faceDown={false} size="sm" />
-                ))}
-                {/* Placeholder slots */}
-                {state.variant === 'texas_holdem' || state.variant === 'omaha' || state.variant === 'omaha_hilo'
-                  ? Array(5 - state.communityCards.length).fill(null).map((_, i) => (
-                      <Card key={`ph-${i}`} size="sm" />
-                    ))
-                  : null}
-              </div>
-            )}
+            {/* Community cards & Deck */}
+            <div className="flex items-center gap-4">
+              {/* Deck */}
+              {state.phase !== 'ended' && state.phase !== 'waiting' && (
+                <div className="relative group perspective-1000 hidden sm:block">
+                  <div className="w-10 h-14 bg-blue-800 rounded-md border border-blue-600 shadow-lg transform -rotate-6 translate-x-1 translate-y-1" />
+                  <div className="absolute inset-0 w-10 h-14 bg-blue-700 rounded-md border border-blue-500 shadow-lg transform -rotate-3 translate-x-0.5 translate-y-0.5" />
+                  <Card size="sm" faceDown={true} className="shadow-2xl" />
+                </div>
+              )}
+
+              {state.communityCards.length > 0 && (
+                <div className="flex gap-2">
+                  {state.communityCards.map((card, i) => (
+                    <Card key={i} card={card} faceDown={false} size="sm" />
+                  ))}
+                  {/* Placeholder slots */}
+                  {state.variant === 'texas_holdem' || state.variant === 'omaha' || state.variant === 'omaha_hilo'
+                    ? Array(5 - state.communityCards.length).fill(null).map((_, i) => (
+                        <Card key={`ph-${i}`} size="sm" />
+                      ))
+                    : null}
+                </div>
+              )}
+            </div>
 
             {/* Phase label */}
             <div className="text-white/40 text-xs uppercase tracking-widest font-light">

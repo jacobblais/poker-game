@@ -49,13 +49,13 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
       <div className={`
         relative px-3 py-1.5 rounded-xl border text-center min-w-[90px] transition-all duration-300
         ${player.folded ? 'opacity-40 scale-95' : ''}
-        ${isCurrentTurn ? 'border-yellow-400 shadow-lg shadow-yellow-500/40 scale-105' : 'border-white/20'}
+        ${isCurrentTurn ? 'border-yellow-400 scale-105 glow-active' : 'border-white/20'}
         ${isWinner ? 'border-green-400 shadow-lg shadow-green-500/40' : ''}
         ${isHuman ? 'bg-blue-900/80 backdrop-blur-sm' : 'bg-slate-800/80 backdrop-blur-sm'}
       `}>
         {/* Turn indicator */}
         {isCurrentTurn && !player.folded && (
-          <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-yellow-400 rounded-full animate-pulse" />
+          <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(234,179,8,1)]" />
         )}
 
         {/* Dealer/Blind badges */}
@@ -77,7 +77,7 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
         <div className="text-xs text-yellow-300 font-mono">${player.chips.toLocaleString()}</div>
 
         {player.bet > 0 && !player.folded && (
-          <div className="text-[10px] text-blue-300 flex items-center justify-center gap-1">
+          <div key={`${player.id}-${player.bet}`} className="text-[10px] text-blue-300 flex items-center justify-center gap-1 chip-animate">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-blue-300 inline-block shadow-sm" />
             Bet: ${player.bet}
           </div>
