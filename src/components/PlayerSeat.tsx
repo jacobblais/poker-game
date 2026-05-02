@@ -45,7 +45,7 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
             }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ 
-              delay: (seatIndex * 0.1) + (i * 0.2),
+              delay: (player.seatIndex * 0.1) + (i * 0.2),
               type: 'spring',
               stiffness: 100,
               damping: 15
