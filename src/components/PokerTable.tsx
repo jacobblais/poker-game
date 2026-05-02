@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { GameState, WinnerInfo } from '@/lib/types';
 import Card from './Card';
 import PlayerSeat from './PlayerSeat';
@@ -46,15 +47,23 @@ export default function PokerTable({
           {/* Community Cards */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
             {/* Pot */}
-            {potTotal > 0 && (
-              <div className="bg-black/70 backdrop-blur-md px-4 py-1.5 rounded-full text-yellow-300 font-bold text-sm border-2 border-yellow-500/50 flex items-center gap-2 shadow-xl animate-pulse">
-                <div className="flex -space-x-1">
-                  <span className="w-3.5 h-3.5 rounded-full bg-red-600 border border-red-400 shadow-sm" />
-                  <span className="w-3.5 h-3.5 rounded-full bg-blue-600 border border-blue-400 shadow-sm" />
-                </div>
-                <span>${potTotal.toLocaleString()}</span>
-              </div>
-            )}
+            <AnimatePresence>
+              {potTotal > 0 && (
+                <motion.div
+                  layoutId="main-pot"
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.5, opacity: 0 }}
+                  className="bg-black/70 backdrop-blur-md px-4 py-1.5 rounded-full text-yellow-300 font-bold text-sm border-2 border-yellow-500/50 flex items-center gap-2 shadow-xl animate-pulse"
+                >
+                  <div className="flex -space-x-1">
+                    <span className="w-3.5 h-3.5 rounded-full bg-red-600 border border-red-400 shadow-sm" />
+                    <span className="w-3.5 h-3.5 rounded-full bg-blue-600 border border-blue-400 shadow-sm" />
+                  </div>
+                  <span>${potTotal.toLocaleString()}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Community cards & Deck */}
             <div className="flex items-center gap-4">

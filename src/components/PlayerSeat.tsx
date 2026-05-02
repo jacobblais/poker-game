@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Player, GameState, WinnerInfo } from '@/lib/types';
 import Card from './Card';
 
@@ -77,10 +78,16 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
         <div className="text-xs text-yellow-300 font-mono">${player.chips.toLocaleString()}</div>
 
         {player.bet > 0 && !player.folded && (
-          <div key={`${player.id}-${player.bet}`} className="text-[10px] text-blue-300 flex items-center justify-center gap-1 chip-animate">
+          <motion.div
+            key={`${player.id}-${player.bet}`}
+            layoutId={`bet-${player.id}`}
+            initial={{ scale: 0.5, y: 20, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            className="text-[10px] text-blue-300 flex items-center justify-center gap-1"
+          >
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-blue-300 inline-block shadow-sm" />
             Bet: ${player.bet}
-          </div>
+          </motion.div>
         )}
         {player.folded && (
           <div className="text-[10px] text-red-400 font-bold">FOLDED</div>
