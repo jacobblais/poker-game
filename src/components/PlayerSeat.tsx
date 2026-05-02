@@ -32,13 +32,24 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
   return (
     <div className={`absolute flex flex-col items-center gap-1 ${positionStyles[position]}`}>
       {/* Cards */}
-      <div className="flex gap-1 mb-1">
+      <div className="flex -space-x-4 mb-2 justify-center">
         {player.holeCards.map((card, i) => (
           <Card
-            key={i}
+            key={`${state.handNumber}-${i}`}
             card={card}
             faceDown={!isHuman && !showCards && !isWinner && card.faceUp !== true}
             size="sm"
+            initial={{ 
+              y: position.startsWith('top') ? 100 : -100,
+              opacity: 0 
+            }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ 
+              delay: (seatIndex * 0.1) + (i * 0.2),
+              type: 'spring',
+              stiffness: 100,
+              damping: 15
+            }}
           />
         ))}
         {player.holeCards.length === 0 && !player.folded && (
