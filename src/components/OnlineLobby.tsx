@@ -29,6 +29,7 @@ export default function OnlineLobby({ config, onBack, onJoinRoom }: OnlineLobbyP
   const [roomName, setRoomName] = useState(`${config.playerName}'s Table`);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [adminPass, setAdminPass] = useState('');
 
   const [playerId] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -98,6 +99,27 @@ export default function OnlineLobby({ config, onBack, onJoinRoom }: OnlineLobbyP
         onJoinRoom(roomId, playerId);
       } else {
         setError('Failed to join room');
+      }
+    } catch {
+      setError('Network error');
+    }
+    setLoading(false);
+  };
+  
+  const deleteRoom = async (roomId: string) => {
+    if (!confirm('Are you sure you want to delete this room?')) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/rooms/${roomId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playerId, adminPassword: adminPass }),
+      });
+      if (res.ok) {
+        fetchRooms();
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Failed to delete room');
       }
     } catch {
       setError('Network error');
@@ -182,6 +204,10 @@ export default function OnlineLobby({ config, onBack, onJoinRoom }: OnlineLobbyP
             </div>
 
             {/* Join by code */}
+              </div>
+            </div>
+
+            {/* Join by code */}
             <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[32px] border border-white/10 p-6 shadow-2xl">
               <h3 className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Invitation</h3>
               <p className="text-white font-black text-xl mb-6">Join with Access Code</p>
@@ -203,6 +229,23 @@ export default function OnlineLobby({ config, onBack, onJoinRoom }: OnlineLobbyP
                   Connect
                 </motion.button>
               </div>
+            </div>
+
+            {/* Admin Access */}
+            <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[32px] border border-white/10 p-6 shadow-2xl opacity-40 hover:opacity-100 transition-opacity">
+              <h3 className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Authority</h3>
+              <input
+                type="password"
+                value={adminPass}
+                onChange={e => setAdminPass(e.target.value)}
+                className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-3 text-white text-xs font-bold focus:outline-none focus:border-red-500/50 transition-all"
+                placeholder="Admin Password"
+              />
+              {adminPass === 'overlord' && (
+                <div className="mt-2 text-[10px] text-red-500 font-bold uppercase tracking-widest text-center animate-pulse">
+                  Admin Access Granted
+                </div>
+              )}
             </div>
           </div>
 
@@ -257,6 +300,16 @@ export default function OnlineLobby({ config, onBack, onJoinRoom }: OnlineLobbyP
                               <div className="text-[10px] text-white/20 font-black uppercase tracking-widest">ID</div>
                               <div className="text-white/40 font-mono text-xs">{room.id}</div>
                             </div>
+                            {adminPass === 'overlord' && (
+                              <motion.button
+                                whileHover={{ scale: 1.1, rotate: 5 }}
+                                whileTap={{ scale: 0.9 }}
+                                onClick={(e) => { e.stopPropagation(); deleteRoom(room.id); }}
+                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-600/20 text-red-500 border border-red-500/30 hover:bg-red-600 hover:text-white transition-all"
+                              >
+                                🗑️
+                              </motion.button>
+                            )}
                             <motion.button
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}

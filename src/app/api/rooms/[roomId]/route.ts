@@ -6,15 +6,16 @@ export async function DELETE(
   { params }: { params: Promise<{ roomId: string }> }
 ) {
   const { roomId } = await params;
-  const { playerId } = await req.json();
+  const { playerId, adminPassword } = await req.json();
+  const isAdmin = adminPassword === 'overlord';
 
   const room = await getRoom(roomId);
   if (!room) {
     return NextResponse.json({ error: 'Room not found' }, { status: 404 });
   }
 
-  if (room.hostId !== playerId) {
-    return NextResponse.json({ error: 'Only host can close the table' }, { status: 403 });
+  if (room.hostId !== playerId && !isAdmin) {
+    return NextResponse.json({ error: 'Only host or admin can close the table' }, { status: 403 });
   }
 
   await deleteRoom(roomId);
