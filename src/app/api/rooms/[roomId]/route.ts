@@ -3,7 +3,7 @@ import { getRoom, deleteRoom } from '@/lib/store';
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { roomId: string } }
+  { params }: { params: Promise<{ roomId: string }> }
 ) {
   const { roomId } = await params;
   const { playerId } = await req.json();
