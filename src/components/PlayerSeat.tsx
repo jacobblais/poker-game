@@ -77,7 +77,10 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
         <div className="text-xs text-yellow-300 font-mono">${player.chips.toLocaleString()}</div>
 
         {player.bet > 0 && !player.folded && (
-          <div className="text-[10px] text-blue-300">Bet: ${player.bet}</div>
+          <div className="text-[10px] text-blue-300 flex items-center justify-center gap-1">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-blue-300 inline-block shadow-sm" />
+            Bet: ${player.bet}
+          </div>
         )}
         {player.folded && (
           <div className="text-[10px] text-red-400 font-bold">FOLDED</div>
@@ -89,8 +92,8 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
           <div className="text-[9px] text-green-300 mt-0.5 font-medium">{player.handResult.name}</div>
         )}
         {isWinner && (
-          <div className="text-[10px] text-green-400 font-bold animate-bounce">
-            +${winAmount.toLocaleString()} 🏆
+          <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg border-2 border-green-400 animate-bounce z-50 whitespace-nowrap">
+            🏆 Winner +${winAmount.toLocaleString()}
           </div>
         )}
       </div>

@@ -47,8 +47,12 @@ export default function PokerTable({
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
             {/* Pot */}
             {potTotal > 0 && (
-              <div className="bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-yellow-300 font-bold text-sm border border-yellow-500/30">
-                💰 ${potTotal.toLocaleString()}
+              <div className="bg-black/70 backdrop-blur-md px-4 py-1.5 rounded-full text-yellow-300 font-bold text-sm border-2 border-yellow-500/50 flex items-center gap-2 shadow-xl animate-pulse">
+                <div className="flex -space-x-1">
+                  <span className="w-3.5 h-3.5 rounded-full bg-red-600 border border-red-400 shadow-sm" />
+                  <span className="w-3.5 h-3.5 rounded-full bg-blue-600 border border-blue-400 shadow-sm" />
+                </div>
+                <span>${potTotal.toLocaleString()}</span>
               </div>
             )}
 
@@ -103,22 +107,28 @@ export default function PokerTable({
 
       {/* Winner announcement */}
       {showdown && state.winners && state.winners.length > 0 && (
-        <div className="relative z-50 bg-gradient-to-r from-yellow-900/80 to-amber-900/80 border border-yellow-500/50 rounded-2xl p-4 text-center backdrop-blur-sm shadow-2xl">
-          <div className="text-2xl mb-1">🏆 Winner!</div>
-          {state.winners.map((w, i) => (
-            <div key={i} className="text-white font-semibold">
-              <span className="text-yellow-300">{w.playerName}</span> wins{' '}
-              <span className="text-green-300">${w.potAmount.toLocaleString()}</span>{' '}
-              with <span className="text-blue-300">{w.handName}</span>
-              {w.isLow && <span className="text-purple-300"> (Low)</span>}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
+          <div className="bg-black/80 backdrop-blur-xl border-4 border-yellow-500/50 rounded-[40px] p-8 text-center shadow-[0_0_100px_rgba(234,179,8,0.3)] animate-in fade-in zoom-in duration-500 pointer-events-auto max-w-lg w-full mx-4">
+            <div className="text-5xl mb-4 animate-bounce">🏆</div>
+            <h2 className="text-4xl font-black text-white mb-4 bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 bg-clip-text text-transparent uppercase tracking-tighter">
+              Winner!
+            </h2>
+            <div className="space-y-4 mb-8">
+              {state.winners.map((w, i) => (
+                <div key={i} className="text-xl text-white font-medium bg-white/5 py-3 px-6 rounded-2xl border border-white/10">
+                  <span className="text-yellow-300 font-bold">{w.playerName}</span>
+                  <div className="text-2xl font-black text-green-400 mt-1">${w.potAmount.toLocaleString()}</div>
+                  <div className="text-sm text-white/50 mt-1">{w.handName}{w.isLow ? ' (Low)' : ''}</div>
+                </div>
+              ))}
             </div>
-          ))}
-          <button
-            onClick={onNewHand}
-            className="mt-3 px-6 py-2 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl transition active:scale-95 border border-green-400"
-          >
-            Next Hand →
-          </button>
+            <button
+              onClick={onNewHand}
+              className="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-black text-xl rounded-2xl transition-all active:scale-95 shadow-xl shadow-green-900/40 border-b-4 border-green-700"
+            >
+              Next Hand →
+            </button>
+          </div>
         </div>
       )}
 

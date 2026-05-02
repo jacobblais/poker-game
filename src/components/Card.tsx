@@ -27,7 +27,7 @@ export default function Card({ card, faceDown = false, size = 'md', selected, on
       onClick={onClick}
       style={{ width: dims.w, height: dims.h }}
       className={`
-        relative rounded-lg border-2 flex-shrink-0 select-none
+        relative rounded-lg border-2 flex-shrink-0 select-none overflow-hidden
         transition-all duration-200
         ${onClick ? 'cursor-pointer hover:scale-105' : ''}
         ${selected ? 'ring-2 ring-yellow-400 -translate-y-3 shadow-yellow-500/50 shadow-lg' : ''}
@@ -43,22 +43,22 @@ export default function Card({ card, faceDown = false, size = 'md', selected, on
         </div>
       ) : card ? (
         // Card face
-        <div className={`w-full h-full rounded-lg bg-white border-2 flex flex-col justify-between p-1 shadow-md
+        <div className={`w-full h-full rounded-lg bg-white border-2 flex flex-col justify-between p-0.5 shadow-md
           ${selected ? 'border-yellow-400' : 'border-gray-200'}
         `}>
           {/* Top left */}
-          <div className={`leading-none font-bold text-left ${isRed ? 'text-red-600' : 'text-gray-900'}`}>
-            <div style={{ fontSize: dims.rank }}>{card.rank}</div>
-            <div style={{ fontSize: dims.suit * 0.7 }}>{SUIT_SYMBOLS[card.suit]}</div>
+          <div className={`leading-[0.8] font-bold text-left ${isRed ? 'text-red-600' : 'text-gray-900'}`}>
+            <div style={{ fontSize: dims.rank * 0.9 }}>{card.rank}</div>
+            <div style={{ fontSize: dims.suit * 0.5 }}>{SUIT_SYMBOLS[card.suit]}</div>
           </div>
           {/* Center */}
-          <div className={`text-center font-bold ${isRed ? 'text-red-500' : 'text-gray-800'}`} style={{ fontSize: dims.suit }}>
+          <div className={`flex-1 flex items-center justify-center font-bold ${isRed ? 'text-red-500' : 'text-gray-800'}`} style={{ fontSize: dims.suit * 1.1 }}>
             {SUIT_SYMBOLS[card.suit]}
           </div>
           {/* Bottom right (rotated) */}
-          <div className={`rotate-180 leading-none font-bold text-left ${isRed ? 'text-red-600' : 'text-gray-900'}`}>
-            <div style={{ fontSize: dims.rank }}>{card.rank}</div>
-            <div style={{ fontSize: dims.suit * 0.7 }}>{SUIT_SYMBOLS[card.suit]}</div>
+          <div className={`rotate-180 leading-[0.8] font-bold text-left ${isRed ? 'text-red-600' : 'text-gray-900'}`}>
+            <div style={{ fontSize: dims.rank * 0.9 }}>{card.rank}</div>
+            <div style={{ fontSize: dims.suit * 0.5 }}>{SUIT_SYMBOLS[card.suit]}</div>
           </div>
         </div>
       ) : (
