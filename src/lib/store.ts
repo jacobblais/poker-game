@@ -13,6 +13,13 @@ export function setRoom(room: GameRoom): void {
   rooms.set(room.id, room);
 }
 
+export function updateRoom(id: string, updates: Partial<GameRoom>): void {
+  const room = rooms.get(id);
+  if (room) {
+    rooms.set(id, { ...room, ...updates });
+  }
+}
+
 export function getRooms(): GameRoom[] {
   return Array.from(rooms.values());
 }
