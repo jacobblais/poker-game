@@ -51,16 +51,20 @@ export default function PokerTable({
               {potTotal > 0 && (
                 <motion.div
                   layoutId="main-pot"
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.5, opacity: 0 }}
-                  className="bg-black/70 backdrop-blur-md px-4 py-1.5 rounded-full text-yellow-300 font-bold text-sm border-2 border-yellow-500/50 flex items-center gap-2 shadow-xl animate-pulse"
+                  initial={{ scale: 0.5, y: -20, opacity: 0 }}
+                  animate={{ scale: 1, y: 0, opacity: 1 }}
+                  exit={{ scale: 0.5, y: -20, opacity: 0 }}
+                  className="bg-black/80 backdrop-blur-xl px-6 py-2.5 rounded-2xl text-yellow-400 font-black text-2xl border-4 border-yellow-500/30 flex flex-col items-center gap-1 shadow-[0_0_50px_rgba(234,179,8,0.2)] mb-4"
                 >
-                  <div className="flex -space-x-1">
-                    <span className="w-3.5 h-3.5 rounded-full bg-red-600 border border-red-400 shadow-sm" />
-                    <span className="w-3.5 h-3.5 rounded-full bg-blue-600 border border-blue-400 shadow-sm" />
+                  <div className="text-[10px] text-yellow-500/50 uppercase tracking-[0.3em] font-bold">Total Pot</div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex -space-x-2">
+                      <span className="w-5 h-5 rounded-full bg-red-600 border-2 border-red-400 shadow-lg" />
+                      <span className="w-5 h-5 rounded-full bg-blue-600 border-2 border-blue-400 shadow-lg" />
+                      <span className="w-5 h-5 rounded-full bg-green-600 border-2 border-green-400 shadow-lg" />
+                    </div>
+                    <span className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">${potTotal.toLocaleString()}</span>
                   </div>
-                  <span>${potTotal.toLocaleString()}</span>
                 </motion.div>
               )}
             </AnimatePresence>
