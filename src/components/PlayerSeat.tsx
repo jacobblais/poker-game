@@ -35,7 +35,7 @@ export default function PlayerSeat({ player, state, isCurrentTurn, position, sho
       {/* Cards */}
       <div className="flex gap-1 mb-1">
         {player.holeCards.map((card, i) => {
-          const shouldShow = isHuman || isWinner || card.faceUp === true || isSpectator || showCards;
+          const shouldShow = isHuman || isWinner || card.faceUp === true || isSpectator || (showCards && !player.folded);
           return (
             <Card
               key={i}

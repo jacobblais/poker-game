@@ -228,7 +228,10 @@ export function usePokerGame(options: UsePokerGameOptions) {
 
   const humanPlayer = state?.players.find(p => !p.isBot) ?? null;
   const isHumanTurn = state
-    ? !state.players[state.currentPlayerIndex]?.isBot && state.phase !== 'ended' && state.phase !== 'waiting'
+    ? !state.players[state.currentPlayerIndex]?.isBot && 
+      state.phase !== 'ended' && 
+      state.phase !== 'waiting' &&
+      !isBettingRoundComplete(state)
     : false;
   const callAmount = state && humanPlayer
     ? Math.max(0, state.currentBet - (humanPlayer.bet ?? 0))

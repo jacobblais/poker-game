@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PokerTable from './PokerTable';
 import { GameState, PlayerAction } from '@/lib/types';
+import { isBettingRoundComplete } from '@/lib/gameEngine';
 
 interface OnlineGameProps {
   roomId: string;
@@ -128,7 +129,9 @@ export default function OnlineGame({ roomId, playerId, playerName, onBack }: Onl
 
   const humanPlayer = gameState?.players.find(p => p.id === playerId) ?? null;
   const isHumanTurn = gameState
-    ? gameState.players[gameState.currentPlayerIndex]?.id === playerId && gameState.phase !== 'ended'
+    ? gameState.players[gameState.currentPlayerIndex]?.id === playerId && 
+      gameState.phase !== 'ended' &&
+      !isBettingRoundComplete(gameState)
     : false;
   const callAmount = gameState && humanPlayer
     ? Math.max(0, gameState.currentBet - (humanPlayer.bet ?? 0))

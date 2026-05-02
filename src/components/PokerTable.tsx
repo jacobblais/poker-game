@@ -174,7 +174,7 @@ export default function PokerTable({
       )}
 
       {/* Action panel */}
-      {isHumanTurn && humanPlayer && !humanPlayer.folded && (
+      {isHumanTurn && humanPlayer && !humanPlayer.folded && !humanPlayer.isAllIn && (
         <ActionPanel
           state={state}
           humanPlayer={humanPlayer}
